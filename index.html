@@ -5,57 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Calculator</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+   <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #141e30, #243b55);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
 
-        .calculator {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            width: 300px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-        }
+    .calculator {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 20px;
+        width: 300px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    }
 
-        #display {
-            width: 100%;
-            box-sizing: border-box;
-            height: 60px;
-            margin-bottom: 15px;
-            font-size: 28px;
-            text-align: right;
-            padding: 10px;
-        }
+    #display {
+        width: 100%;
+        box-sizing: border-box;
+        height: 65px;
+        margin-bottom: 15px;
+        font-size: 28px;
+        text-align: right;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+    }
 
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
 
-        button {
-            height: 60px;
-            font-size: 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+    button {
+        height: 60px;
+        font-size: 20px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #e9ecef;
+    }
 
-        button:hover {
-            opacity: 0.8;
-        }
+    button:hover {
+        opacity: 0.8;
+    }
 
-        .equals {
-            grid-column: span 2;
-        }
-    </style>
+    .equals {
+        grid-column: span 2;
+        background: #2563eb;
+        color: white;
+    }
+</style>
 </head>
 
 <body>
