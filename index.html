@@ -5,65 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Calculator</title>
 
-   <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #141e30, #243b55);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-    }
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    .calculator {
-        background: #ffffff;
-        padding: 25px;
-        border-radius: 20px;
-        width: 300px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
 
-    #display {
-        width: 100%;
-        box-sizing: border-box;
-        height: 65px;
-        margin-bottom: 15px;
-        font-size: 28px;
-        text-align: right;
-        padding: 10px;
-        border: 2px solid #ddd;
-        border-radius: 10px;
-    }
+        #specialText {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-    .buttons {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
-    }
+        .calculator {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 20px;
+            width: 300px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+        }
 
-    button {
-        height: 60px;
-        font-size: 20px;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        background: #e9ecef;
-    }
+        #display {
+            width: 100%;
+            box-sizing: border-box;
+            height: 65px;
+            margin-bottom: 15px;
+            font-size: 28px;
+            text-align: right;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
 
-    button:hover {
-        opacity: 0.8;
-    }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
 
-    .equals {
-        grid-column: span 2;
-        background: #2563eb;
-        color: white;
-    }
-</style>
+        button {
+            height: 60px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #e9ecef;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .equals {
+            grid-column: span 2;
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Client settings panel */
+        #settingsPanel {
+            display: none;
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        #settingsPanel input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 8px 0 15px;
+            font-size: 16px;
+        }
+
+        #settingsPanel button {
+            width: 100%;
+            height: 45px;
+            background: #2563eb;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
+
+    <div id="settingsPanel">
+        <h3>Client Settings</h3>
+
+        <label>Special text</label>
+        <input
+            type="text"
+            id="textInput"
+            placeholder="Enter text above calculator"
+        >
+
+        <label>Background color</label>
+        <input
+            type="color"
+            id="backgroundInput"
+            value="#141e30"
+        >
+
+        <label>Button color</label>
+        <input
+            type="color"
+            id="buttonInput"
+            value="#e9ecef"
+        >
+
+        <button onclick="saveSettings()">Save Changes</button>
+    </div>
+
+    <div id="specialText"></div>
 
     <div class="calculator">
 
@@ -97,37 +163,202 @@
 
     </div>
 
-    <script>
-        const display = document.getElementById("display");
+<script>
 
-        function appendValue(value) {
-            if (display.value === "0") {
-                display.value = value;
-            } else {
-                display.value += value;
-            }
+    // =========================================================
+    // SUPABASE CONNECTION
+    // =========================================================
+
+    const SUPABASE_URL = "https://zhjdetvehpnhngjsvreb.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_QoNapA3o2-vxfxfNuQBnNg_xOsdsIVm";
+
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+    // =========================================================
+    // CALCULATOR
+    // =========================================================
+
+    const display = document.getElementById("display");
+
+    function appendValue(value) {
+        if (display.value === "0") {
+            display.value = value;
+        } else {
+            display.value += value;
         }
+    }
 
-        function clearDisplay() {
+    function clearDisplay() {
+        display.value = "0";
+    }
+
+    function deleteLast() {
+        display.value = display.value.slice(0, -1);
+
+        if (display.value === "") {
             display.value = "0";
         }
+    }
 
-        function deleteLast() {
-            display.value = display.value.slice(0, -1);
+    function calculate() {
+        try {
+            display.value = eval(display.value);
+        } catch {
+            display.value = "Error";
+        }
+    }
 
-            if (display.value === "") {
-                display.value = "0";
-            }
+
+    // =========================================================
+    // LOAD SETTINGS
+    // =========================================================
+
+    async function loadSettings() {
+
+        const { data, error } = await supabaseClient
+            .from("site_settings")
+            .select("*")
+            .limit(1)
+            .single();
+
+        if (error) {
+            console.error("Could not load settings:", error);
+            return;
         }
 
-        function calculate() {
-            try {
-                display.value = eval(display.value);
-            } catch {
-                display.value = "Error";
-            }
+        applySettings(data);
+    }
+
+
+    function applySettings(settings) {
+
+        if (settings.background_color) {
+            document.body.style.background =
+                settings.background_color;
         }
-    </script>
+
+        if (settings.title) {
+            document.getElementById("specialText").textContent =
+                settings.title;
+        }
+
+        if (settings.button_color) {
+
+            document.querySelectorAll(".buttons button")
+                .forEach(button => {
+                    button.style.backgroundColor =
+                        settings.button_color;
+                });
+
+            document.querySelector(".equals").style.backgroundColor =
+                settings.button_color;
+        }
+
+        document.getElementById("textInput").value =
+            settings.title || "";
+
+        document.getElementById("backgroundInput").value =
+            settings.background_color || "#141e30";
+
+        document.getElementById("buttonInput").value =
+            settings.button_color || "#e9ecef";
+    }
+
+
+    // =========================================================
+    // SHOW SETTINGS ONLY TO LOGGED-IN USER
+    // =========================================================
+
+    async function checkUser() {
+
+        const { data } = await supabaseClient.auth.getUser();
+
+        if (data.user) {
+
+            console.log("Logged in user:", data.user.email);
+
+            document.getElementById("settingsPanel").style.display =
+                "block";
+        }
+    }
+
+
+    // =========================================================
+    // SAVE SETTINGS
+    // =========================================================
+
+    async function saveSettings() {
+
+        const title =
+            document.getElementById("textInput").value;
+
+        const backgroundColor =
+            document.getElementById("backgroundInput").value;
+
+        const buttonColor =
+            document.getElementById("buttonInput").value;
+
+
+        const { error } = await supabaseClient
+            .from("site_settings")
+            .update({
+                title: title,
+                background_color: backgroundColor,
+                button_color: buttonColor
+            })
+            .not("title", "is", null);
+
+
+        if (error) {
+
+            console.error(error);
+
+            alert("Could not save settings.");
+
+            return;
+        }
+
+        alert("Settings updated!");
+
+        loadSettings();
+    }
+
+
+    // =========================================================
+    // REALTIME
+    // =========================================================
+
+    supabaseClient
+        .channel("site-settings-changes")
+        .on(
+            "postgres_changes",
+            {
+                event: "UPDATE",
+                schema: "public",
+                table: "site_settings"
+            },
+            payload => {
+
+                console.log("Settings changed:", payload.new);
+
+                applySettings(payload.new);
+            }
+        )
+        .subscribe();
+
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    loadSettings();
+    checkUser();
+
+</script>
 
 </body>
 </html>
