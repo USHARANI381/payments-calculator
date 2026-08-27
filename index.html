@@ -273,18 +273,19 @@
     // SHOW SETTINGS ONLY TO LOGGED-IN USER
     // =========================================================
 
-    async function checkUser() {
+  async function checkUser() {
 
-        const { data } = await supabaseClient.auth.getUser();
+    const { data, error } = await supabaseClient.auth.getUser();
 
-        if (data.user) {
-
-            console.log("Logged in user:", data.user.email);
-
-            document.getElementById("settingsPanel").style.display =
-                "block";
-        }
+    if (error || !data.user) {
+        console.log("No user is logged in.");
+        return;
     }
+
+    console.log("Logged in user:", data.user.email);
+
+    document.getElementById("settingsPanel").style.display = "block";
+}
 
 
     // =========================================================
