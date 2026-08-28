@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #141e30, #243b55);
@@ -97,11 +98,56 @@
             background: #2563eb;
             color: white;
         }
+        #loginPanel {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    width: 300px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+#loginPanel input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+#loginPanel button {
+    width: 100%;
+    height: 45px;
+    background: #2563eb;
+    color: white;
+}
+
+#loginMessage {
+    font-size: 14px;
+}
     </style>
 </head>
 
 <body>
+<div id="loginPanel">
+    <h3>Client Login</h3>
 
+    <input
+        type="email"
+        id="emailInput"
+        placeholder="Email"
+    >
+
+    <input
+        type="password"
+        id="passwordInput"
+        placeholder="Password"
+    >
+
+    <button onclick="login()">Login</button>
+
+    <p id="loginMessage"></p>
+</div>
     <div id="settingsPanel">
         <h3>Client Settings</h3>
 
@@ -164,6 +210,28 @@
     </div>
 
 <script>
+    async function login() {
+
+    const email = document.getElementById("emailInput").value;
+    const password = document.getElementById("passwordInput").value;
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        document.getElementById("loginMessage").textContent =
+            "Login failed: " + error.message;
+        return;
+    }
+
+    document.getElementById("loginMessage").textContent =
+        "Login successful!";
+
+    document.getElementById("loginPanel").style.display = "none";
+    document.getElementById("settingsPanel").style.display = "block";
+}
 
     // =========================================================
     // SUPABASE CONNECTION
